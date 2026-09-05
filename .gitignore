@@ -1,0 +1,20 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# opennext / cloudflare build output
+/.open-next/
+/.wrangler/
+
+# env files (never commit real secrets)
+.env
+.env*.local
+.dev.vars
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
