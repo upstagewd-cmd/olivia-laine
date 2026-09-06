@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "olivia-laine-site",
+  "name": "olivia-laine",
   "compatibility_date": "2024-12-30",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -9,16 +9,17 @@
     "binding": "ASSETS"
   },
   "vars": {
-    // Public, non-secret values — fill these in before deploying.
-    // Secrets (API keys, DB URL, etc.) go through `wrangler secret put`
-    // instead — see README.md.
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "",
-    "NEXT_PUBLIC_CAL_LINK": ""
+    // These are genuinely public values (designed to be embedded in
+    // browser code), so it's fine to commit real values here rather than
+    // relying on the dashboard — replace the empty strings below with your
+    // actual values before deploying.
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZXhjaXRpbmctc2NvcnBpb24tNTIyNi5jbGVyay5hY2NvdW50cy5kZXYk",
+    "NEXT_PUBLIC_CAL_LINK": "olivia-laine/30min"
   },
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "olivia-laine-site"
+      "service": "olivia-laine"
     }
   ]
 }
