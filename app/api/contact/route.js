@@ -2,7 +2,14 @@ import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy for the same reason as lib/db.js's sql client: creating this at
+// module load time makes it run during Next.js's build-time page-data
+// collection too, where Cloudflare's runtime secrets aren't yet available.
+let _resend;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 export async function POST(req) {
   const { name, email, message } = await req.json();
@@ -19,7 +26,7 @@ export async function POST(req) {
   // Don't fail the whole request if the email fails — the inquiry is
   // already saved and visible in /admin/inquiries either way.
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: process.env.CONTACT_FROM_EMAIL,
       to: process.env.CONTACT_TO_EMAIL,
       replyTo: email,
