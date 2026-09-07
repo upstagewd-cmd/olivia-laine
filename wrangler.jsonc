@@ -8,13 +8,26 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
   "vars": {
     // These are genuinely public values (designed to be embedded in
     // browser code), so it's fine to commit real values here rather than
     // relying on the dashboard — replace the empty strings below with your
     // actual values before deploying.
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZXhjaXRpbmctc2NvcnBpb24tNTIyNi5jbGVyay5hY2NvdW50cy5kZXYk",
-    "NEXT_PUBLIC_CAL_LINK": "olivia-laine/30min"
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_REPLACE_ME",
+    "NEXT_PUBLIC_CAL_LINK": "REPLACE_ME"
   },
   "services": [
     {
