@@ -23,11 +23,14 @@
   },
   "vars": {
     // These are genuinely public values (designed to be embedded in
-    // browser code), so it's fine to commit real values here rather than
-    // relying on the dashboard — replace the empty strings below with your
-    // actual values before deploying.
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_REPLACE_ME",
-    "NEXT_PUBLIC_CAL_LINK": "REPLACE_ME"
+    // browser code / not sensitive), so it's fine to commit real values
+    // here rather than relying on the dashboard. IMPORTANT: every
+    // `wrangler deploy` replaces the whole runtime variable list with
+    // exactly what's in this block — that's why the two placeholders
+    // below actually need real values, not just left as-is.
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZXhjaXRpbmctc2NvcnBpb24tNTIyNi5jbGVyay5hY2NvdW50cy5kZXYk",
+    "NEXT_PUBLIC_CAL_LINK": "olivia-laine/30min",
+    "PUBLIC_PORTFOLIO_PROJECT_ID": "a814fafd-95c4-4bda-aaf8-8d58b4d715c3"
   },
   "services": [
     {
