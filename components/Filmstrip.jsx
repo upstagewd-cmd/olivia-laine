@@ -1,30 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import RatingSlate from "./RatingSlate";
 
 function FilmstripItem({ item, withRating }) {
   return (
     <motion.div
-      className="relative w-[84vw] flex-none snap-start md:w-[320px]"
+      className="relative flex h-full w-[84vw] flex-none flex-col snap-start md:w-[32vw]"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="relative overflow-hidden">
+      <div className="relative flex-1 overflow-hidden">
         {item.type === "video" ? (
           <video
             src={item.src}
             controls
-            className="block h-[460px] w-full object-cover bg-[#2b2822] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className="block h-full w-full object-cover bg-[#2b2822] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
         ) : (
           <img
             src={item.src}
             alt={item.name || item.caption || ""}
-            className="block h-[460px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className="block h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
         )}
 
@@ -59,14 +59,31 @@ export default function Filmstrip({ items, withRating = false }) {
   const ref = useRef(null);
   const scroll = (dir) => ref.current?.scrollBy({ left: dir * 360, behavior: "smooth" });
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Translates vertical scroll/trackpad input into horizontal movement,
+    // so a normal scroll gesture pans through the strip left-to-right
+    // instead of needing a horizontal-specific gesture.
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // already horizontal, leave it alone
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
     <div className="relative flex-1">
       <div
         ref={ref}
-        className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto p-4 md:gap-4 md:p-10"
+        className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto p-4 md:gap-4 md:p-6"
       >
         {items.map((item) => (
-          <div className="group" key={item.id}>
+          <div className="group h-full" key={item.id}>
             <FilmstripItem item={item} withRating={withRating} />
           </div>
         ))}
