@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import Filmstrip from "@/components/Filmstrip";
 
-export default async function PortalPage() {
+export default async function PortalPage({ searchParams }) {
   const { userId } = await auth();
+  const params = await searchParams;
 
   // Look up (or lazily create) the client record tied to this Clerk user.
   const [client] = await sql`
@@ -28,7 +30,8 @@ export default async function PortalPage() {
     return <div className="p-8 pt-28 text-stone md:pl-[216px] md:pt-8">No active projects right now.</div>;
   }
 
-  const project = projects[0];
+  const selectedId = params?.project;
+  const project = projects.find((p) => p.id === selectedId) || projects[0];
 
   const mediaWithReactions = await sql`
     select m.id, m.r2_key, m.link_url, m.original_filename, m.type, m.caption,
@@ -52,8 +55,23 @@ export default async function PortalPage() {
   }));
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="px-4 pt-28 md:px-10 md:pl-[216px] md:pt-8">
+    <div className="flex h-full min-h-0 flex-1 flex-col">
+      <div className="flex-shrink-0 px-4 pt-28 md:px-10 md:pl-[216px] md:pt-8">
+        {projects.length > 1 && (
+          <div className="mb-3 flex flex-wrap gap-4 overflow-x-auto">
+            {projects.map((p) => (
+              <Link
+                key={p.id}
+                href={`/portal?project=${p.id}`}
+                className={`whitespace-nowrap text-sm transition-colors duration-300 ${
+                  p.id === project.id ? "italic text-gold" : "text-stone"
+                }`}
+              >
+                {p.title}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="text-xs text-stone">{project.title}</div>
         <h1 className="mt-1 text-2xl text-ink">New drops for your review</h1>
       </div>

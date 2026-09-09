@@ -48,7 +48,7 @@ function LinkCard({ item }) {
 function FilmstripItem({ item, withRating }) {
   return (
     <motion.div
-      className="relative flex h-full w-[84vw] flex-none flex-col snap-start md:w-[32vw]"
+      className="relative flex h-full w-[84vw] flex-none flex-col overflow-y-auto snap-start md:w-[32vw]"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
@@ -151,7 +151,7 @@ export default function Filmstrip({ items, withRating = false }) {
   const scroll = (dir) => setClampedOffset(offsetRef.current + dir * 360);
 
   return (
-    <div ref={containerRef} className="relative flex-1 overflow-x-auto md:overflow-hidden">
+    <div ref={containerRef} className="relative min-h-0 flex-1 overflow-x-auto md:overflow-hidden">
       <div
         ref={trackRef}
         className="flex h-full snap-x snap-proximity gap-4 p-4 pt-28 md:gap-4 md:pb-8 md:pl-[216px] md:pr-6 md:pt-8"
