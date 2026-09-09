@@ -32,5 +32,5 @@ export default async function HomePage() {
     caption: m.caption,
   }));
 
-  return <Filmstrip items={items} />;
+  return <Filmstrip items={items} autoplayVideo />;
 }

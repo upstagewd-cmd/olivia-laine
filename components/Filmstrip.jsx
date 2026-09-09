@@ -45,7 +45,7 @@ function LinkCard({ item }) {
   );
 }
 
-function FilmstripItem({ item, withRating }) {
+function FilmstripItem({ item, withRating, autoplayVideo }) {
   return (
     <motion.div
       className="relative flex h-full w-[84vw] flex-none flex-col overflow-y-auto snap-start md:w-[32vw]"
@@ -59,6 +59,7 @@ function FilmstripItem({ item, withRating }) {
           <video
             src={item.src}
             controls
+            {...(autoplayVideo ? { autoPlay: true, muted: true, loop: true, playsInline: true } : {})}
             className="block h-full w-full object-cover bg-[#2b2822] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
         )}
@@ -104,7 +105,7 @@ function FilmstripItem({ item, withRating }) {
   );
 }
 
-export default function Filmstrip({ items, withRating = false }) {
+export default function Filmstrip({ items, withRating = false, autoplayVideo = false }) {
   const containerRef = useRef(null);
   const trackRef = useRef(null);
   const offsetRef = useRef(0);
@@ -159,7 +160,7 @@ export default function Filmstrip({ items, withRating = false }) {
       >
         {items.map((item) => (
           <div className="group h-full" key={item.id}>
-            <FilmstripItem item={item} withRating={withRating} />
+            <FilmstripItem item={item} withRating={withRating} autoplayVideo={autoplayVideo} />
           </div>
         ))}
       </div>

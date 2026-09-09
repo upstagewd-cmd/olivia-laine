@@ -8,9 +8,13 @@ export default async function AdminProjectPage({ params }) {
 
   const [project] = await sql`select id, title, status, client_id from projects where id = ${id}`;
   const media = await sql`
-    select id, r2_key, link_url, original_filename, type, caption
-    from media_items where project_id = ${id}
-    order by sort_order asc
+    select m.id, m.r2_key, m.link_url, m.original_filename, m.type, m.caption,
+           r.rating, r.comment
+    from media_items m
+    left join reactions r
+      on r.media_item_id = m.id and r.client_id = ${project?.client_id}
+    where m.project_id = ${id}
+    order by m.sort_order asc
   `;
 
   if (!project) {
@@ -24,6 +28,8 @@ export default async function AdminProjectPage({ params }) {
     src: m.r2_key ? `${process.env.R2_PUBLIC_URL}/${m.r2_key}` : undefined,
     linkUrl: m.link_url,
     originalFilename: m.original_filename,
+    rating: m.rating,
+    comment: m.comment,
   }));
 
   return (
