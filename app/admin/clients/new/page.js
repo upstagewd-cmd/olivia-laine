@@ -26,7 +26,10 @@ async function createClient(formData) {
       redirectUrl: `${process.env.SITE_URL}/portal`,
     });
   } catch (e) {
-    console.error("Clerk invitation failed:", e);
+    const details = `Clerk invitation failed | status=${e?.status} message=${e?.message} errors=${JSON.stringify(
+      e?.errors || null
+    )}`;
+    console.error(details);
   }
 
   redirect("/admin");
