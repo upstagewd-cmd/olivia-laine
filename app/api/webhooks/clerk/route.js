@@ -20,23 +20,31 @@ export async function POST(req) {
   try {
     event = new Webhook(secret).verify(payload, headers);
   } catch (e) {
-    console.error("Clerk webhook signature verification failed:", e);
+    console.error("Clerk webhook signature verification failed:", e?.message);
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   if (event.type === "user.created") {
     const user = event.data;
-    const emails = (user.email_addresses || []).map((e) => e.email_address.toLowerCase());
+    const addresses = user.email_addresses || [];
+    const primary = addresses.find((a) => a.id === user.primary_email_address_id);
+    const email = (primary?.email_address || addresses[0]?.email_address || "").toLowerCase();
 
-    if (emails.length > 0) {
-      // Match against any client we've already created (by email) that's
-      // still waiting for its Clerk account to be linked.
-      await sql`
-        update clients
-        set clerk_user_id = ${user.id}
-        where clerk_user_id is null
-          and lower(email) = any(${emails})
-      `;
+    if (email) {
+      try {
+        const result = await sql`
+          update clients
+          set clerk_user_id = ${user.id}
+          where clerk_user_id is null
+            and lower(email) = ${email}
+          returning id
+        `;
+        console.log(`Clerk webhook: user.created for ${email}, linked ${result.length} client record(s)`);
+      } catch (e) {
+        console.error(`Clerk webhook DB update failed for ${email}: ${e?.message}`);
+      }
+    } else {
+      console.error("Clerk webhook: user.created event had no email address");
     }
   }
 

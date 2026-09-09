@@ -23,7 +23,7 @@ async function createClient(formData) {
     const client = await clerkClient();
     await client.invitations.createInvitation({
       emailAddress: email,
-      redirectUrl: `${process.env.SITE_URL}/portal`,
+      redirectUrl: `${process.env.SITE_URL}/sign-up`,
     });
   } catch (e) {
     const details = `Clerk invitation failed | status=${e?.status} message=${e?.message} errors=${JSON.stringify(
