@@ -23,7 +23,7 @@ const steps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="h-full overflow-y-auto pb-24 pt-20 md:pl-[216px] md:pt-8">
+    <div className="h-full overflow-y-auto pb-24 pt-28 md:pl-[216px] md:pt-8">
       <div className="max-w-3xl px-6 md:px-10">
         <div className="text-xs text-stone">How it works</div>
         <h1 className="mt-2 text-3xl italic text-ink md:text-4xl">

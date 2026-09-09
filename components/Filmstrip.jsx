@@ -154,7 +154,7 @@ export default function Filmstrip({ items, withRating = false }) {
     <div ref={containerRef} className="relative flex-1 overflow-x-auto md:overflow-hidden">
       <div
         ref={trackRef}
-        className="flex h-full snap-x snap-proximity gap-4 p-4 pt-20 md:gap-4 md:pb-8 md:pl-[216px] md:pr-6 md:pt-8"
+        className="flex h-full snap-x snap-proximity gap-4 p-4 pt-28 md:gap-4 md:pb-8 md:pl-[216px] md:pr-6 md:pt-8"
         style={{ transform: `translateX(-${offset}px)` }}
       >
         {items.map((item) => (

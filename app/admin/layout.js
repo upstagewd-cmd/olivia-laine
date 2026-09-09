@@ -7,8 +7,8 @@ export default async function AdminLayout({ children }) {
   if (!userId) redirect("/");
 
   return (
-    <div className="flex flex-1 flex-col pt-16 md:pt-0 md:pl-[200px]">
-      <div className="flex gap-4 border-b border-line px-4 py-3 text-sm md:px-10">
+    <div className="flex h-full flex-1 flex-col pt-28 md:pt-0 md:pl-[200px]">
+      <div className="flex flex-shrink-0 gap-4 border-b border-line px-4 py-3 text-sm md:px-10">
         <Link href="/admin" className="text-ink">
           Dashboard
         </Link>
@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }) {
           Inquiries
         </Link>
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 overflow-y-auto">{children}</div>
     </div>
   );
 }

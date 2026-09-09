@@ -12,7 +12,7 @@ export default async function PortalPage() {
 
   if (!client) {
     return (
-      <div className="p-8 pt-20 text-stone md:pl-[216px] md:pt-8">
+      <div className="p-8 pt-28 text-stone md:pl-[216px] md:pt-8">
         No project is linked to this account yet — she'll set that up on her end.
       </div>
     );
@@ -25,7 +25,7 @@ export default async function PortalPage() {
   `;
 
   if (projects.length === 0) {
-    return <div className="p-8 pt-20 text-stone md:pl-[216px] md:pt-8">No active projects right now.</div>;
+    return <div className="p-8 pt-28 text-stone md:pl-[216px] md:pt-8">No active projects right now.</div>;
   }
 
   const project = projects[0];
@@ -53,7 +53,7 @@ export default async function PortalPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="px-4 pt-20 md:px-10 md:pl-[216px] md:pt-8">
+      <div className="px-4 pt-28 md:px-10 md:pl-[216px] md:pt-8">
         <div className="text-xs text-stone">{project.title}</div>
         <h1 className="mt-1 text-2xl text-ink">New drops for your review</h1>
       </div>
