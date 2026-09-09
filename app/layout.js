@@ -13,9 +13,9 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body className="font-sans">
-          <div className="flex min-h-screen flex-col md:flex-row">
+          <div className="relative h-screen w-screen overflow-hidden">
             <Sidebar />
-            <main className="flex flex-1 flex-col">
+            <main className="flex h-full w-full flex-col">
               <PageTransition>{children}</PageTransition>
             </main>
           </div>

@@ -1,8 +1,9 @@
 import { sql } from "@/lib/db";
+import InquiryReply from "@/components/InquiryReply";
 
 export default async function InquiriesPage() {
   const inquiries = await sql`
-    select id, name, email, message, created_at
+    select id, name, email, message, replied_at, created_at
     from inquiries order by created_at desc
   `;
 
@@ -21,6 +22,7 @@ export default async function InquiriesPage() {
               </div>
             </div>
             <p className="mt-2 text-sm text-ink">{i.message}</p>
+            <InquiryReply inquiryId={i.id} repliedAt={i.replied_at} />
           </div>
         ))}
         {inquiries.length === 0 && (

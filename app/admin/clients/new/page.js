@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { clerkClient } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import { requireAdmin } from "@/lib/isAdmin";
 
@@ -9,12 +10,24 @@ async function createClient(formData) {
 
   const name = formData.get("name");
   const email = formData.get("email");
-  const clerkUserId = formData.get("clerkUserId");
 
   await sql`
-    insert into clients (clerk_user_id, name, email)
-    values (${clerkUserId}, ${name}, ${email})
+    insert into clients (name, email)
+    values (${name}, ${email})
   `;
+
+  // Best-effort — if this fails (e.g. they already have an account, or an
+  // invite already exists), the client record is still created and you can
+  // invite them manually from the Clerk dashboard instead.
+  try {
+    const client = await clerkClient();
+    await client.invitations.createInvitation({
+      emailAddress: email,
+      redirectUrl: `${process.env.SITE_URL}/portal`,
+    });
+  } catch (e) {
+    console.error("Clerk invitation failed:", e);
+  }
 
   redirect("/admin");
 }
@@ -40,22 +53,13 @@ export default function NewClientPage() {
             required
             className="border border-line bg-transparent p-2 text-ink"
           />
-        </label>
-        <label className="flex flex-col gap-1 text-sm text-stone">
-          Clerk User ID
-          <input
-            name="clerkUserId"
-            required
-            placeholder="user_..."
-            className="border border-line bg-transparent p-2 text-ink"
-          />
           <span className="text-xs text-stone">
-            From the Clerk dashboard, after they've signed up (or you've invited them and they've
-            accepted). Users → click their name → copy the User ID at the top.
+            An invite email goes out automatically. Once they accept and sign up, their account
+            links to this client record on its own — no manual Clerk ID lookup needed.
           </span>
         </label>
         <button type="submit" className="mt-2 w-fit border border-gold px-4 py-2 text-sm text-gold">
-          Create client
+          Create client &amp; send invite
         </button>
       </form>
     </div>

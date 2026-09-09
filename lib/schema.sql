@@ -1,6 +1,6 @@
 create table if not exists clients (
   id uuid primary key default gen_random_uuid(),
-  clerk_user_id text unique not null,
+  clerk_user_id text unique,
   name text not null,
   email text not null,
   company text,
@@ -18,8 +18,10 @@ create table if not exists projects (
 create table if not exists media_items (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references projects(id) on delete cascade,
-  r2_key text not null,
-  type text not null check (type in ('image', 'video')),
+  r2_key text,
+  link_url text,
+  original_filename text,
+  type text not null check (type in ('image', 'video', 'file', 'link')),
   caption text,
   sort_order int not null default 0,
   created_at timestamptz not null default now()
@@ -49,5 +51,6 @@ create table if not exists inquiries (
   name text not null,
   email text not null,
   message text not null,
+  replied_at timestamptz,
   created_at timestamptz not null default now()
 );

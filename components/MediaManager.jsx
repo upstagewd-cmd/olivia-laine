@@ -57,12 +57,15 @@ function MediaRow({ item, isFirst, isLast }) {
       animate={{ opacity: busy ? 0.5 : 1 }}
       className="flex items-center gap-4 border-b border-line py-3"
     >
-      <div className="h-16 w-16 flex-shrink-0 overflow-hidden bg-line">
-        {item.type === "video" ? (
-          <video src={item.src} className="h-full w-full object-cover" muted />
-        ) : (
-          <img src={item.src} alt="" className="h-full w-full object-cover" />
-        )}
+      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden bg-line text-center text-[10px] text-stone">
+        {item.type === "video" && <video src={item.src} className="h-full w-full object-cover" muted />}
+        {item.type === "image" && <img src={item.src} alt="" className="h-full w-full object-cover" />}
+        {item.type === "file" && <span>FILE</span>}
+        {item.type === "link" && <span>LINK</span>}
+      </div>
+
+      <div className="w-16 flex-shrink-0 text-[10px] uppercase tracking-wide text-stone">
+        {item.type}
       </div>
 
       <input

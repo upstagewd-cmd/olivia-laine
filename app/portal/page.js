@@ -12,7 +12,7 @@ export default async function PortalPage() {
 
   if (!client) {
     return (
-      <div className="p-8 text-stone">
+      <div className="p-8 pt-20 text-stone md:pl-[216px] md:pt-8">
         No project is linked to this account yet — she'll set that up on her end.
       </div>
     );
@@ -25,13 +25,13 @@ export default async function PortalPage() {
   `;
 
   if (projects.length === 0) {
-    return <div className="p-8 text-stone">No active projects right now.</div>;
+    return <div className="p-8 pt-20 text-stone md:pl-[216px] md:pt-8">No active projects right now.</div>;
   }
 
   const project = projects[0];
 
   const mediaWithReactions = await sql`
-    select m.id, m.r2_key, m.type, m.caption,
+    select m.id, m.r2_key, m.link_url, m.original_filename, m.type, m.caption,
            r.rating, r.comment
     from media_items m
     left join reactions r
@@ -43,7 +43,9 @@ export default async function PortalPage() {
   const items = mediaWithReactions.map((m) => ({
     id: m.id,
     type: m.type,
-    src: `${process.env.R2_PUBLIC_URL}/${m.r2_key}`,
+    src: m.r2_key ? `${process.env.R2_PUBLIC_URL}/${m.r2_key}` : undefined,
+    linkUrl: m.link_url,
+    originalFilename: m.original_filename,
     caption: m.caption,
     rating: m.rating,
     comment: m.comment,
@@ -51,7 +53,7 @@ export default async function PortalPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="px-4 pt-6 md:px-10 md:pt-8">
+      <div className="px-4 pt-20 md:px-10 md:pl-[216px] md:pt-8">
         <div className="text-xs text-stone">{project.title}</div>
         <h1 className="mt-1 text-2xl text-ink">New drops for your review</h1>
       </div>

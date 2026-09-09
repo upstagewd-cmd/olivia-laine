@@ -8,16 +8,17 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 const navItems = [
   { href: "/", label: "Portfolio" },
   { href: "/about", label: "About" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/booking", label: "Booking" },
-  { href: "/portal", label: "Clients" },
   { href: "/contact", label: "Contact" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const portalActive = pathname === "/portal";
 
   return (
-    <div className="flex w-full flex-row items-center justify-between border-b border-line px-4 py-3 md:w-[200px] md:flex-col md:items-stretch md:justify-between md:border-b-0 md:border-r md:px-6 md:py-7">
+    <div className="fixed inset-x-0 top-0 z-20 flex flex-row items-center justify-between border-b border-line/60 bg-bg/70 px-4 py-3 backdrop-blur-md md:inset-y-0 md:right-auto md:w-[200px] md:flex-col md:items-stretch md:justify-between md:border-b-0 md:border-r md:px-6 md:py-7">
       <div>
         <div className="font-serif text-[15px] tracking-[2px] text-ink md:text-xl">
           OLIVIA
@@ -54,19 +55,30 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="hidden text-[11px] leading-relaxed text-stone md:block">
-          hello@olivialaine.com
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/portal"
+            className={`whitespace-nowrap border px-3 py-1.5 text-xs transition-colors duration-300 ${
+              portalActive ? "border-gold text-gold" : "border-line text-stone hover:border-stone"
+            }`}
+          >
+            Client Portal
+          </Link>
+
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="text-xs text-stone underline">Sign in</button>
+            </SignInButton>
+          </SignedOut>
         </div>
 
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button className="text-xs text-stone underline">Sign in</button>
-          </SignInButton>
-        </SignedOut>
+        <div className="hidden text-[11px] leading-relaxed text-stone md:block">
+          hello@olivialainestylist.com
+        </div>
       </div>
     </div>
   );

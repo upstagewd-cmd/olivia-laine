@@ -4,7 +4,7 @@ import { sql } from "@/lib/db";
 export default async function AdminDashboard() {
   const rows = await sql`
     select
-      c.id as client_id, c.name as client_name,
+      c.id as client_id, c.name as client_name, c.clerk_user_id,
       p.id as project_id, p.title as project_title,
       (select count(*) from media_items m where m.project_id = p.id) as media_count
     from clients c
@@ -14,7 +14,13 @@ export default async function AdminDashboard() {
 
   const byClient = {};
   for (const row of rows) {
-    if (!byClient[row.client_id]) byClient[row.client_id] = { name: row.client_name, projects: [] };
+    if (!byClient[row.client_id]) {
+      byClient[row.client_id] = {
+        name: row.client_name,
+        pending: !row.clerk_user_id,
+        projects: [],
+      };
+    }
     if (row.project_id) {
       byClient[row.client_id].projects.push({
         id: row.project_id,
@@ -30,7 +36,12 @@ export default async function AdminDashboard() {
       <div className="mt-6 flex flex-col gap-8">
         {Object.entries(byClient).map(([clientId, client]) => (
           <div key={clientId}>
-            <div className="font-medium text-ink">{client.name}</div>
+            <Link href={`/admin/clients/${clientId}`} className="font-medium text-ink underline">
+              {client.name}
+            </Link>
+            {client.pending && (
+              <span className="ml-2 text-xs text-gold">Invite pending</span>
+            )}
             <div className="mt-2 flex flex-col gap-1">
               {client.projects.length === 0 && (
                 <div className="text-sm text-stone">No projects yet.</div>

@@ -14,7 +14,7 @@ export default async function HomePage() {
   }
 
   const media = await sql`
-    select id, r2_key, type, caption
+    select id, r2_key, link_url, original_filename, type, caption
     from media_items where project_id = ${projectId}
     order by sort_order asc
   `;
@@ -26,7 +26,9 @@ export default async function HomePage() {
   const items = media.map((m) => ({
     id: m.id,
     type: m.type,
-    src: `${process.env.R2_PUBLIC_URL}/${m.r2_key}`,
+    src: m.r2_key ? `${process.env.R2_PUBLIC_URL}/${m.r2_key}` : undefined,
+    linkUrl: m.link_url,
+    originalFilename: m.original_filename,
     caption: m.caption,
   }));
 

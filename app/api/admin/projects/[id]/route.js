@@ -8,9 +8,9 @@ export async function PATCH(req, { params }) {
   if (!admin) return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
   const { id } = await params;
-  const { caption } = await req.json();
+  const { status } = await req.json();
 
-  await sql`update media_items set caption = ${caption} where id = ${id}`;
+  await sql`update projects set status = ${status} where id = ${id}`;
   return NextResponse.json({ ok: true });
 }
 
@@ -20,17 +20,19 @@ export async function DELETE(req, { params }) {
 
   const { id } = await params;
 
-  const [item] = await sql`select r2_key from media_items where id = ${id}`;
-  if (item?.r2_key) {
+  // Clean up any uploaded files in R2 before the cascade delete removes the
+  // database rows — otherwise those objects would be orphaned in the bucket.
+  const mediaItems = await sql`
+    select r2_key from media_items where project_id = ${id} and r2_key is not null
+  `;
+  for (const item of mediaItems) {
     try {
       await deleteObject(item.r2_key);
     } catch (e) {
-      // Don't block the DB deletion if R2 cleanup fails — better to have an
-      // orphaned file than a media item stuck in the database.
       console.error("R2 delete failed:", e);
     }
   }
 
-  await sql`delete from media_items where id = ${id}`;
+  await sql`delete from projects where id = ${id}`;
   return NextResponse.json({ ok: true });
 }
