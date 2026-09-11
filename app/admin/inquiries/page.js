@@ -3,7 +3,7 @@ import InquiryReply from "@/components/InquiryReply";
 
 export default async function InquiriesPage() {
   const inquiries = await sql`
-    select id, name, email, message, replied_at, created_at
+    select id, name, email, message, track, replied_at, created_at
     from inquiries order by created_at desc
   `;
 
@@ -16,6 +16,11 @@ export default async function InquiriesPage() {
             <div className="flex items-baseline justify-between">
               <div className="text-sm font-medium text-ink">
                 {i.name} <span className="text-stone">— {i.email}</span>
+                {i.track === "personal" && (
+                  <span className="ml-2 border border-line px-2 py-0.5 text-[10px] uppercase tracking-wide text-stone">
+                    Personal Styling
+                  </span>
+                )}
               </div>
               <div className="text-xs text-stone">
                 {new Date(i.created_at).toLocaleDateString()}

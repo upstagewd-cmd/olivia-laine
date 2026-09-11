@@ -12,25 +12,26 @@ function getResend() {
 }
 
 export async function POST(req) {
-  const { name, email, message } = await req.json();
+  const { name, email, message, track } = await req.json();
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   await sql`
-    insert into inquiries (name, email, message)
-    values (${name}, ${email}, ${message})
+    insert into inquiries (name, email, message, track)
+    values (${name}, ${email}, ${message}, ${track || null})
   `;
 
   // Don't fail the whole request if the email fails — the inquiry is
   // already saved and visible in /admin/inquiries either way.
   try {
+    const trackLabel = track === "personal" ? " (Personal Styling)" : "";
     await getResend().emails.send({
       from: process.env.CONTACT_FROM_EMAIL,
       to: process.env.CONTACT_TO_EMAIL,
       replyTo: email,
-      subject: `New inquiry from ${name}`,
+      subject: `New inquiry from ${name}${trackLabel}`,
       text: `${message}\n\n— ${name} <${email}>`,
     });
   } catch (e) {

@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-export default function BookingEmbed() {
-  const calLink = process.env.NEXT_PUBLIC_CAL_LINK;
+export default function BookingEmbed({ calLink: calLinkProp }) {
+  const calLink = calLinkProp || process.env.NEXT_PUBLIC_CAL_LINK;
   const containerRef = useRef(null);
   // A fresh namespace per mount, so Cal's embed script treats every visit as
   // a brand-new embed rather than colliding with leftover state from a

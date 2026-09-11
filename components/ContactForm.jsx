@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
-export default function ContactForm() {
+export default function ContactForm({ track }) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
@@ -14,7 +14,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, track }),
       });
       if (!res.ok) throw new Error();
       setStatus("sent");
@@ -61,7 +61,7 @@ export default function ContactForm() {
           <textarea
             required
             rows={5}
-            placeholder="Tell her about your production"
+            placeholder={track === "personal" ? "Tell her about your style goals" : "Tell her about your production"}
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
             className="border border-line bg-transparent p-2 text-ink transition-colors duration-200 focus:border-gold"

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
@@ -13,10 +13,11 @@ const navItems = [
   { href: "/contact", label: "Contact" },
 ];
 
-function NavLink({ item, active, layoutId }) {
+function NavLink({ item, active, layoutId, track }) {
+  const href = track ? `${item.href}?track=${track}` : item.href;
   return (
     <Link
-      href={item.href}
+      href={href}
       className="relative w-fit whitespace-nowrap px-1 py-2 text-sm"
     >
       <span
@@ -61,6 +62,8 @@ function AccountControls({ portalActive }) {
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const track = searchParams.get("track");
   const portalActive = pathname === "/portal";
 
   return (
@@ -85,6 +88,7 @@ export default function Sidebar() {
               item={item}
               active={pathname === item.href}
               layoutId="active-nav-underline-mobile"
+              track={track}
             />
           ))}
         </nav>
@@ -107,6 +111,7 @@ export default function Sidebar() {
                 item={item}
                 active={pathname === item.href}
                 layoutId="active-nav-underline-desktop"
+                track={track}
               />
             ))}
           </nav>
