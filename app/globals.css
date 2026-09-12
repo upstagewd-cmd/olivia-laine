@@ -4,7 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-bg: 245 239 228; /* #F5EFE4 warm cream */
+  --color-ink: 36 31 26; /* #241F1A near-black */
+  --color-stone: 143 132 113; /* #8F8471 */
+  --color-gold: 169 130 47; /* #A9822F */
+  --color-line: 222 210 187; /* #DED2BB */
+  --color-ondark: 245 239 228;
+}
+
+[data-track="personal"] {
+  --color-bg: 243 232 225; /* #F3E8E1 blush cream */
+  --color-ink: 58 42 46; /* #3A2A2E warm plum-charcoal */
+  --color-stone: 160 136 131; /* #A08883 warm rose-taupe */
+  --color-gold: 181 114 107; /* #B5726B dusty terracotta */
+  --color-line: 227 210 201; /* #E3D2C9 soft blush */
+  --color-ondark: 243 232 225;
+}
+
 body {
-  background: #f5efe4;
-  color: #241f1a;
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-ink));
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
