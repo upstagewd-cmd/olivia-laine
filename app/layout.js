@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body className="font-sans">
-          <div className="relative h-screen w-screen overflow-hidden">
+          <div className="relative h-dvh w-screen overflow-hidden">
             <Suspense fallback={null}>
               <Sidebar />
             </Suspense>

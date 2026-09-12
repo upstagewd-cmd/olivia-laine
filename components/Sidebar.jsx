@@ -66,7 +66,30 @@ function NavLink({ item, active, layoutId, track }) {
   );
 }
 
-function TrackToggle({ pathname, activeTrack }) {
+function TrackToggle({ pathname, activeTrack, compact }) {
+  if (compact) {
+    return (
+      <div className="flex flex-shrink-0 items-center gap-1 border-r border-line pr-3">
+        {Object.entries(TRACKS).map(([key, label]) => {
+          const Icon = ICONS[key];
+          const isActive = activeTrack === key;
+          return (
+            <Link
+              key={key}
+              href={`${pathname}?track=${key}`}
+              aria-label={label}
+              className={`flex h-7 w-7 flex-shrink-0 items-center justify-center border transition-colors duration-300 ${
+                isActive ? "border-gold bg-gold text-ondark" : "border-line text-stone"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+            </Link>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col border border-line">
       {Object.entries(TRACKS).map(([key, label]) => {
@@ -138,7 +161,8 @@ export default function Sidebar() {
             <AccountControls portalActive={portalActive} />
           </div>
         </div>
-        <nav className="flex flex-row gap-4 overflow-x-auto px-4 pb-2">
+        <nav className="flex flex-row items-center gap-4 overflow-x-auto px-4 pb-2">
+          <TrackToggle pathname={pathname} activeTrack={activeTrack} compact />
           {navItems.map((item) => (
             <NavLink
               key={item.href}

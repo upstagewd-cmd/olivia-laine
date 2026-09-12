@@ -24,7 +24,7 @@ function SplashHalf({ href, label, image, align }) {
 
 export default function SplashPage() {
   return (
-    <div className="relative flex h-screen w-screen flex-col">
+    <div className="relative flex h-dvh w-screen flex-col">
       <SplashHalf
         href="/work?track=commercial"
         label="Commercial Styling"
