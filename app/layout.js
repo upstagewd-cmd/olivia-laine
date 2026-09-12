@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 import Sidebar from "@/components/Sidebar";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
@@ -14,7 +15,9 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className="font-sans">
           <div className="relative h-screen w-screen overflow-hidden">
-            <Sidebar />
+            <Suspense fallback={null}>
+              <Sidebar />
+            </Suspense>
             <main className="flex h-full w-full flex-col">
               <PageTransition>{children}</PageTransition>
             </main>
