@@ -1,124 +1,53 @@
 import Link from "next/link";
-import { sql } from "@/lib/db";
-import Filmstrip from "@/components/Filmstrip";
 
-const TRACKS = {
-  commercial: {
-    label: "Commercial",
-    envVar: "PUBLIC_PORTFOLIO_PROJECT_ID",
-  },
-  personal: {
-    label: "Personal Styling",
-    envVar: "PUBLIC_PORTFOLIO_PROJECT_ID_PERSONAL",
-  },
-};
-
-function ClapperIcon({ className }) {
+function SplashHalf({ href, label, image, align }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
-      <path
-        d="M3 9.5L4.5 5h15L21 9.5M3 9.5V19a1 1 0 001 1h16a1 1 0 001-1V9.5M3 9.5h18M7 5l1.5 4.5M13 5l1.5 4.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+    <Link
+      href={href}
+      className={`group relative flex flex-1 justify-center overflow-hidden ${
+        align === "top" ? "items-start pt-16 md:pt-24" : "items-end pb-16 md:pb-24"
+      }`}
+    >
+      <img
+        src={image}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
       />
-    </svg>
+      <div className="absolute inset-0 bg-black/25 transition-opacity duration-700 group-hover:bg-black/10" />
+
+      <span className="relative z-10 w-48 border border-ondark/30 bg-ink/70 px-6 py-3 text-center text-sm uppercase tracking-[0.2em] text-ondark backdrop-blur-sm transition-colors duration-300 group-hover:border-ondark/60">
+        {label}
+      </span>
+    </Link>
   );
 }
 
-function HangerIcon({ className }) {
+export default function SplashPage() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
-      <path
-        d="M12 4a1.6 1.6 0 10-1.6 1.6M12 5.6v2M4 20l7.2-6.2a1.2 1.2 0 011.6 0L20 20M4 20h16"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+    <div className="relative flex h-screen w-screen flex-col">
+      <SplashHalf
+        href="/work?track=commercial"
+        label="Commercial Styling"
+        image="/commercial-banner.jpg"
+        align="top"
       />
-    </svg>
-  );
-}
+      <SplashHalf
+        href="/work?track=personal"
+        label="Personal Styling"
+        image="/personal-banner.jpg"
+        align="bottom"
+      />
 
-const ICONS = { commercial: ClapperIcon, personal: HangerIcon };
-
-function TrackToggle({ active }) {
-  return (
-    <div className="inline-flex border border-line">
-      {Object.entries(TRACKS).map(([key, track]) => {
-        const Icon = ICONS[key];
-        const isActive = active === key;
-        return (
-          <Link
-            key={key}
-            href={`/?track=${key}`}
-            className={`flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wide transition-colors duration-300 ${
-              isActive ? "bg-gold text-ondark" : "text-stone hover:text-ink"
-            }`}
-          >
-            <Icon className="h-4 w-4" />
-            {track.label}
-          </Link>
-        );
-      })}
-    </div>
-  );
-}
-
-export default async function HomePage({ searchParams }) {
-  const params = await searchParams;
-  const track = TRACKS[params?.track] ? params.track : "commercial";
-  const projectId = process.env[TRACKS[track].envVar];
-
-  const header = (
-    <div className="flex-shrink-0 px-4 pb-4 pt-28 md:px-10 md:pl-[216px] md:pt-8">
-      <TrackToggle active={track} />
-    </div>
-  );
-
-  if (!projectId) {
-    return (
-      <div className="flex h-full min-h-0 flex-1 flex-col">
-        {header}
-        <div className="px-4 text-stone md:px-10 md:pl-[216px]">
-          No {TRACKS[track].label.toLowerCase()} portfolio configured yet — see
-          ADMIN-SETUP.md, "Connecting the public portfolio," for how to wire this up.
-        </div>
+      {/* Logo, dead center, straddling both halves. Sized to its real
+          proportions (tall — circle mark plus wordmark beneath) rather than
+          forced into a square/circular backdrop. */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-40 -translate-x-1/2 -translate-y-1/2 md:w-56">
+        <img
+          src="/logo.svg"
+          alt="Olivia Laine"
+          className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+        />
       </div>
-    );
-  }
-
-  const media = await sql`
-    select id, r2_key, link_url, original_filename, type, caption
-    from media_items where project_id = ${projectId}
-    order by sort_order asc
-  `;
-
-  if (media.length === 0) {
-    return (
-      <div className="flex h-full min-h-0 flex-1 flex-col">
-        {header}
-        <div className="px-4 text-stone md:px-10 md:pl-[216px]">
-          No {TRACKS[track].label.toLowerCase()} media uploaded yet.
-        </div>
-      </div>
-    );
-  }
-
-  const items = media.map((m) => ({
-    id: m.id,
-    type: m.type,
-    src: m.r2_key ? `${process.env.R2_PUBLIC_URL}/${m.r2_key}` : undefined,
-    linkUrl: m.link_url,
-    originalFilename: m.original_filename,
-    caption: m.caption,
-  }));
-
-  return (
-    <div className="flex h-full min-h-0 flex-1 flex-col">
-      {header}
-      <Filmstrip items={items} autoplayVideo />
     </div>
   );
 }
